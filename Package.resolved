@@ -1,0 +1,25 @@
+{
+  "object": {
+    "pins": [
+      {
+        "package": "Files",
+        "repositoryURL": "https://github.com/JohnSundell/Files.git",
+        "state": {
+          "branch": null,
+          "revision": "6171f9e9d8619678da22355560f3dbed6368058d",
+          "version": "2.0.1"
+        }
+      },
+      {
+        "package": "SwiftShell",
+        "repositoryURL": "https://github.com/kareman/SwiftShell.git",
+        "state": {
+          "branch": null,
+          "revision": "433f28116691a1f19863990924e800e40d5d590c",
+          "version": "3.0.1"
+        }
+      }
+    ]
+  },
+  "version": 1
+}
