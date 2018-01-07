@@ -1,3 +1,5 @@
+PREFIX?=/usr/local
+
 build:
 	swift build
 
@@ -9,3 +11,7 @@ run:
 
 xcode:
 	swift package generate-xcodeproj
+
+install: release-build
+	mkdir -p "$(PREFIX)/bin"
+	cp -f "./.build/release/xcode-open" "$(PREFIX)/bin/xcode-open"
