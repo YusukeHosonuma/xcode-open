@@ -4,7 +4,7 @@ build:
 	swift build
 
 release-build:
-	swift build -c release
+	swift build --disable-sandbox -c release -Xswiftc -static-stdlib
 
 run:
 	./.build/debug/xcode-open
