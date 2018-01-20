@@ -12,68 +12,33 @@ public final class XcodeOpen {
 
     public func execute() throws {
 
-        let applications = try Folder(path: "/Applications").subfolders
-        let subfolders   = try Folder(path: ".").subfolders
-
         var args = arguments
         args.removeFirst()
 
         let argsVersion = args.first
 
-        // save .xcode_version
         if let version = argsVersion, args.contains("--save") {
-            do {
-                try Folder(path: ".").createFile(named: ".xcode_version")
-                try File(path: ".xcode_version").write(string: version)
-            } catch {
-                print("Faild to save .xcode_version.")
-                exit(-1)
-            }
+            saveXcodeVersion(version)
         }
 
-        var specifyVersion: String? = nil
-        do {
-            let content = try File(path: ".xcode_version").readAsString()
-            specifyVersion = content.split(separator: "\n").first.map(String.init)
-        } catch {
-            // do nothing
-        }
+        let version: String? = argsVersion ?? loadXcodeVersion()
 
         var xcodePath: String? = nil
-
-        // use default if nil
-        let version: String? = argsVersion ?? specifyVersion
-
-        // detecte xcode
         if let version = version {
-            
-            let xcode = applications
-                .filter { $0.name.contains("Xcode") && $0.name.contains(version) }
-                .first
-            
-            guard let path = xcode?.path else {
-                print("Xcode \(version) is not found.")
-                exit(-1)
-            }
-            
-            xcodePath = path
+            xcodePath = try detectXcode(version: version)
         }
 
+        let project = try detectProjectFile()
 
-        // detecte workspace or project
-        let projects = [
-                subfolders.filter { $0.name.hasSuffix(".xcworkspace") }.map { $0.name }.first,
-                subfolders.filter { $0.name.hasSuffix(".xcodeproj")   }.map { $0.name }.first
-            ].flatMap { $0 }
-
-        guard let project = projects.first else {
-            print("Xcode Project(.xcworkspace or .xcodeproj is not found.")
-            exit(-1)
+        if !launchXcode(project, xcodePath: xcodePath, version: version) {
+            print("Failed to open Xcode.")
         }
-
-        // open Xcode
+    }
+    
+    private func launchXcode(_ project: String, xcodePath: String?, version: String?) -> Bool {
+        
         let result: RunOutput
-
+        
         if let path = xcodePath, let version = version {
             print("Open Xcode \(version) ...")
             result = run("open", "-a", path, project)
@@ -81,9 +46,57 @@ public final class XcodeOpen {
             print("Open Xcode...")
             result = run("open", project)
         }
-
-        if result.exitcode != 0 {
-            print("Failed to open Xcode.")
+        
+        return result.exitcode == 0
+    }
+    
+    private func loadXcodeVersion() -> String? {
+        do {
+            let content = try File(path: ".xcode_version").readAsString()
+            let version = content.split(separator: "\n").first.map(String.init)
+            return version
+        } catch {
+            // do nothing
         }
+        return nil
+    }
+    
+    private func saveXcodeVersion(_ version: String) {
+        do {
+            try Folder(path: ".").createFile(named: ".xcode_version")
+            try File(path: ".xcode_version").write(string: version)
+        } catch {
+            fatalError("Faild to save .xcode_version.")
+        }
+    }
+    
+    private func detectXcode(version: String) throws -> String {
+        
+        let xcode = try Folder(path: "/Applications")
+            .subfolders
+            .filter { $0.name.contains("Xcode") && $0.name.contains(version) }
+            .first
+        
+        guard let path = xcode?.path else {
+            fatalError("Xcode \(version) is not found.")
+        }
+        
+        return path
+    }
+    
+    private func detectProjectFile() throws -> String {
+        
+        let subfolders = try Folder(path: ".").subfolders
+
+        let projects = [
+            subfolders.filter { $0.name.hasSuffix(".xcworkspace") }.map { $0.name }.first,
+            subfolders.filter { $0.name.hasSuffix(".xcodeproj")   }.map { $0.name }.first
+            ].flatMap { $0 }
+        
+        guard let project = projects.first else {
+            fatalError("Xcode Project (.xcworkspace or .xcodeproj is not found.")
+        }
+
+        return project
     }
 }
