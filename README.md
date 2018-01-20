@@ -1,6 +1,18 @@
 # Summary
 
-Support open Xcode in terminal.
+Open Xcode from terminal.
+
+# Install
+
+## Homebrew
+
+```
+$ brew install YusukeHosonuma/xcode-open/xcode-open
+```
+
+## Download the executable binary from [Releases](https://github.com/YusukeHosonuma/XcodeOpen/releases)
+
+Download from [Releases](https://github.com/YusukeHosonuma/XcodeOpen/releases), then copy to any place.
 
 # Usage
 
