@@ -4,26 +4,23 @@ import SwiftShell
 
 public final class XcodeOpen {
 
-    private let arguments: [String]
+    private let options: Options
+    private let xcodeVersionFile = XcodeVersionFile(filename: Consts.xcodeVersionFilename)
 
-    public init(arguments: [String] = CommandLine.arguments) {
-        self.arguments = arguments
+    public init(options: Options) {
+        self.options = options
     }
 
     public func execute() throws {
 
-        var args = arguments
-        args.removeFirst()
-
-        let argsVersion = args.first
-
-        if let version = argsVersion, args.contains("--save") {
-            saveXcodeVersion(version)
+        if let version = options.version, options.save {
+            xcodeVersionFile.write(version)
         }
 
-        let version: String? = argsVersion ?? loadXcodeVersion()
+        let version: String? = options.version ?? xcodeVersionFile.read()
 
         var xcodePath: String? = nil
+
         if let version = version {
             xcodePath = try detectXcode(version: version)
         }
@@ -31,7 +28,7 @@ public final class XcodeOpen {
         let project = try detectProjectFile()
 
         if !launchXcode(project, xcodePath: xcodePath, version: version) {
-            print("Failed to open Xcode.")
+            fail("Failed to open Xcode.")
         }
     }
     
@@ -43,33 +40,13 @@ public final class XcodeOpen {
             print("Open Xcode \(version) ...")
             result = run("open", "-a", path, project)
         } else {
-            print("Open Xcode...")
+            print("Open Xcode ...")
             result = run("open", project)
         }
         
         return result.exitcode == 0
     }
-    
-    private func loadXcodeVersion() -> String? {
-        do {
-            let content = try File(path: ".xcode_version").readAsString()
-            let version = content.split(separator: "\n").first.map(String.init)
-            return version
-        } catch {
-            // do nothing
-        }
-        return nil
-    }
-    
-    private func saveXcodeVersion(_ version: String) {
-        do {
-            try Folder(path: ".").createFile(named: ".xcode_version")
-            try File(path: ".xcode_version").write(string: version)
-        } catch {
-            fatalError("Faild to save .xcode_version.")
-        }
-    }
-    
+
     private func detectXcode(version: String) throws -> String {
         
         let xcode = try Folder(path: "/Applications")
@@ -78,7 +55,7 @@ public final class XcodeOpen {
             .first
         
         guard let path = xcode?.path else {
-            fatalError("Xcode \(version) is not found.")
+            fail("Xcode \(version) is not found.")
         }
         
         return path
@@ -94,7 +71,7 @@ public final class XcodeOpen {
             ].flatMap { $0 }
         
         guard let project = projects.first else {
-            fatalError("Xcode Project (.xcworkspace or .xcodeproj is not found.")
+            fail("Xcode Project (.xcworkspace or .xcodeproj is not found.")
         }
 
         return project

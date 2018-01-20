@@ -7,10 +7,13 @@ release-build:
 	swift build --disable-sandbox -c release -Xswiftc -static-stdlib
 
 run:
-	./.build/debug/xcode-open
+	./.build/debug/XcodeOpen
 
 xcode:
 	swift package generate-xcodeproj
+
+update:
+	swift package update
 
 install: release-build
 	mkdir -p "$(PREFIX)/bin"
