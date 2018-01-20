@@ -17,4 +17,4 @@ update:
 
 install: release-build
 	mkdir -p "$(PREFIX)/bin"
-	cp -f "./.build/release/xcode-open" "$(PREFIX)/bin/xcode-open"
+	cp -f "./.build/release/XcodeOpen" "$(PREFIX)/bin/XcodeOpen"
