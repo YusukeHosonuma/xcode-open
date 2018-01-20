@@ -5,6 +5,7 @@ build:
 
 release-build:
 	swift build --disable-sandbox -c release -Xswiftc -static-stdlib
+	mv .build/release/XcodeOpen .build/release/xcode-open
 
 run:
 	./.build/debug/XcodeOpen
@@ -17,4 +18,4 @@ update:
 
 install: release-build
 	mkdir -p "$(PREFIX)/bin"
-	cp -f "./.build/release/XcodeOpen" "$(PREFIX)/bin/XcodeOpen"
+	cp -f "./.build/release/xcode-open" "$(PREFIX)/bin/xcode-open"
