@@ -8,6 +8,7 @@ let package = Package(
     dependencies: [
         .package(url: "https://github.com/JohnSundell/Files.git",  from: "2.0.1"),
         .package(url: "https://github.com/kareman/SwiftShell.git", from: "3.0.1"),
+        .package(url: "https://github.com/kylef/Commander.git",    from: "0.8.0"),
     ],
     targets: [
         .target(
@@ -15,7 +16,7 @@ let package = Package(
             dependencies: ["XcodeOpenCore"]),
         .target(
             name: "XcodeOpenCore",
-            dependencies: ["Files", "SwiftShell"]),
+            dependencies: ["Files", "SwiftShell", "Commander"]),
         .testTarget(
             name: "XcodeOpenTests",
             dependencies: ["XcodeOpenCore"]),
