@@ -1,0 +1,10 @@
+language: objective-c
+osx_image: xcode9.2
+env:
+  - TOOLCHAINS=swift
+script:
+  - swift build
+before_install:
+  - export TOOLCHAIN_VERSION=swift-DEVELOPMENT-SNAPSHOT-2018-01-27-a
+  - curl -O https://swift.org/builds/development/xcode/${TOOLCHAIN_VERSION}/${TOOLCHAIN_VERSION}-osx.pkg
+  - sudo installer -pkg ${TOOLCHAIN_VERSION}-osx.pkg -target /
