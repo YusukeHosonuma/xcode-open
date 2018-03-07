@@ -49,12 +49,9 @@ public final class XcodeOpen {
 
     private func detectXcode(version: String) throws -> String {
         
-        let xcode = try Folder(path: "/Applications")
-            .subfolders
-            .filter { $0.name.contains("Xcode") && $0.name.contains(version) }
-            .first
-        
-        guard let path = xcode?.path else {
+        let paths = try Folder(path: "/Applications").subfolders.map(String.init)
+
+        guard let path = XcodeApplicationDetector.detect(version: version, paths: paths) else {
             fail("Xcode \(version) is not found.")
         }
         
@@ -64,16 +61,11 @@ public final class XcodeOpen {
     private func detectProjectFile() throws -> String {
         
         let subfolders = try Folder(path: ".").subfolders
-
-        let projects = [
-            subfolders.filter { $0.name.hasSuffix(".xcworkspace") }.map { $0.name }.first,
-            subfolders.filter { $0.name.hasSuffix(".xcodeproj")   }.map { $0.name }.first
-            ].flatMap { $0 }
         
-        guard let project = projects.first else {
+        guard let project = XcodeProjectDetector.detect(folders: subfolders.names) else {
             fail("Xcode Project (.xcworkspace or .xcodeproj is not found.")
         }
-
+        
         return project
     }
 }
