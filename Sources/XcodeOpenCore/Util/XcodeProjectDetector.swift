@@ -10,8 +10,8 @@ import Foundation
 public class XcodeProjectDetector {
     public static func detect(folders: [String]) -> String? {
         let projects = [
-            folders.filter { $0.hasSuffix(".xcworkspace") }.first,
-            folders.filter { $0.hasSuffix(".xcodeproj")   }.first
+            folders.first { $0.hasSuffix(".xcworkspace") },
+            folders.first { $0.hasSuffix(".xcodeproj") },
             ].flatMap { $0 }
         return projects.first
     }
