@@ -3,6 +3,9 @@ PREFIX?=/usr/local
 build:
 	swift build
 
+test:
+	swift test
+
 release-build:
 	swift build --disable-sandbox -c release -Xswiftc -static-stdlib
 	mv .build/release/XcodeOpen .build/release/xcode-open
