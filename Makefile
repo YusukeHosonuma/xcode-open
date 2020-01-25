@@ -7,7 +7,7 @@ test:
 	swift test
 
 release-build:
-	swift build --disable-sandbox -c release -Xswiftc -static-stdlib
+	swift build --disable-sandbox -c release
 	mv .build/release/XcodeOpen .build/release/xcode-open
 
 run:
