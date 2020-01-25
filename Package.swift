@@ -6,9 +6,9 @@ import PackageDescription
 let package = Package(
     name: "XcodeOpen",
     dependencies: [
-        .package(url: "https://github.com/JohnSundell/Files.git",  from: "2.0.1"),
-        .package(url: "https://github.com/kareman/SwiftShell.git", from: "3.0.1"),
-        .package(url: "https://github.com/kylef/Commander.git",    from: "0.8.0"),
+        .package(url: "https://github.com/JohnSundell/Files.git",  from: "4.1.1"),
+        .package(url: "https://github.com/kareman/SwiftShell.git", from: "5.0.1"),
+        .package(url: "https://github.com/kylef/Commander.git",    from: "0.9.1"),
     ],
     targets: [
         .target(

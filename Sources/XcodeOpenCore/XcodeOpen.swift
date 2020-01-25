@@ -62,7 +62,7 @@ public final class XcodeOpen {
         
         let subfolders = try Folder(path: ".").subfolders
         
-        guard let project = XcodeProjectDetector.detect(folders: subfolders.names) else {
+        guard let project = XcodeProjectDetector.detect(folders: subfolders.names()) else {
             fail("Xcode Project (.xcworkspace or .xcodeproj is not found.")
         }
         
