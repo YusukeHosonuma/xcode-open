@@ -12,7 +12,7 @@ public class XcodeProjectDetector {
         let projects = [
             folders.first { $0.hasSuffix(".xcworkspace") },
             folders.first { $0.hasSuffix(".xcodeproj") },
-            ].flatMap { $0 }
+        ].compactMap { $0 }
         return projects.first
     }
 }
