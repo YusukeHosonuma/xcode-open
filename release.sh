@@ -1,7 +1,10 @@
 lib_name="xcode-open"
 tag=$1
 token=$2
-export GITHUB_TOKEN=$token
+
+if [ -n "$token" ]; then
+    export GITHUB_TOKEN=$token
+fi
 
 filename="${tag}.tar.gz"
 
