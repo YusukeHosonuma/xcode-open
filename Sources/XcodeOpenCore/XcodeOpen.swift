@@ -43,13 +43,17 @@ public final class XcodeOpen {
             print("Open Xcode ...")
             result = run("open", project)
         }
+
+        if let _ = result.error {
+            print(result.stderror)
+        }
         
         return result.exitcode == 0
     }
 
     private func detectXcode(version: String) throws -> String {
         
-        let paths = try Folder(path: "/Applications").subfolders.map(String.init)
+        let paths = try Folder(path: "/Applications").subfolders.map { $0.path }
 
         guard let path = XcodeApplicationDetector.detect(version: version, paths: paths) else {
             fail("Xcode \(version) is not found.")
