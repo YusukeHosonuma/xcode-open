@@ -30,7 +30,7 @@ public class XcodeVersionFile {
     public func write(_ version: String) {
         do {
             try Folder(path: ".").createFile(named: filename)
-            try File(path: filename).write(string: version)
+            try File(path: filename).write(version)
         } catch {
             fail("Faild to save .xcode_version.")
         }
