@@ -10,6 +10,6 @@ jobs:
     steps:
     - uses: actions/checkout@v1
     - name: Run Test
-      run: make tests
+      run: make test
     - name: Run Release Build
       run: make release-build
