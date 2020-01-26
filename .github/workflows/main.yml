@@ -1,0 +1,15 @@
+name: Test / Release Build
+
+on: [pull_request]
+
+jobs:
+  build:
+
+    runs-on: macos-latest
+
+    steps:
+    - uses: actions/checkout@v1
+    - name: Run Test
+      run: make tests
+    - name: Run Release Build
+      run: make release-build
