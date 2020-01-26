@@ -1,23 +1,73 @@
-lib_name="xcode-open"
-tag=$1
-token=$2
+# =====================================
+# Release to GitHub and Homebrew (self-hosted)
+#
+# (Need GitHub Access Token via environment variable 'GITHUB_TOKEN')
+# =====================================
 
-if [ -n "$token" ]; then
-    export GITHUB_TOKEN=$token
+# =====================================
+# Note:
+#
+# Bellow commands are helpful when this release script is failed.
+#
+# Github:
+# ```
+# $ git tag -d {TAG}; git push origin :{TAG}
+# ```
+#
+# Fomula:
+# ```
+# $ cd {YusukeHosonuma/homebrew-xcode-open}
+# $ git pull
+# $ git reset --hard HEAD^
+# $ git push -f
+# ```
+# =====================================
+
+lib_name="xcode-open"
+filename="${lib_name}.tar.gz"
+
+tag=$1
+if [ -s $tag ]; then
+    echo "Usage: ./release.sh {VERSION}"
 fi
 
-filename="${tag}.tar.gz"
+#
+# Release buil and archive
+#
+make release-build
 
-# git tag
+#
+# Archive
+#
+zip -j $filename ".build/release/$lib_name"
+
+#
+# Release to GitHub.com
+#
 git tag $tag
 git push origin $tag
 
-# calc sha256
-curl -LOk "https://github.com/YusukeHosonuma/XcodeOpen/archive/${filename}"
-sha256=$(shasum -a 256 $filename | cut -d ' ' -f 1)
-rm $filename
+# create release
+github-release release \
+    --user YusukeHosonuma \
+    --repo XcodeOpen \
+    --tag $tag
 
+# upload binary
+github-release upload \
+    --user YusukeHosonuma \
+    --repo XcodeOpen \
+    --tag $tag \
+    --name $filename \
+    --file $filename
+#
+# calc sha256
+#
+sha256=$(shasum -a 256 $filename | cut -d ' ' -f 1)
+
+#
 # update formula
+#
 formula_path="$lib_name.rb"
 formula_url="https://api.github.com/repos/YusukeHosonuma/homebrew-$lib_name/contents/$formula_path"
 sha=`curl GET $formula_url | jq -r '.sha'`
@@ -27,7 +77,7 @@ commit_message="Update version to $tag"
 
 curl -i -X PUT $formula_url \
    -H "Content-Type:application/json" \
-   -H "Authorization:token $token" \
+   -H "Authorization:token $GITHUB_TOKEN" \
    -d \
 "{
  \"path\":\"$formula_path\",
@@ -36,22 +86,19 @@ curl -i -X PUT $formula_url \
  \"message\":\"$commit_message\"
 }"
 
-# brew upgrade
-brew upgrade $lib_name
-zip -j $lib_name.zip /usr/local/bin/$lib_name
+#
+# Test
+#
+# TODO: `brew upgrade xcode-open` are failed.
+# ```
+# Warning: xcode-open 1.2.0 already installed
+# + rm xcode-open.tar.gz
+# ```
+#
+# brew update
+# brew upgrade $lib_name
 
-# Github release
-github-release release \
-    --user YusukeHosonuma \
-    --repo XcodeOpen \
-    --tag $tag
-
-# Github upload
-github-release upload \
-    --user YusukeHosonuma \
-    --repo XcodeOpen \
-    --tag $tag \
-    --name $lib_name.zip \
-    --file $lib_name.zip
-
-rm $lib_name.zip
+#
+# Clean
+#
+rm $filename
