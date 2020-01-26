@@ -2,7 +2,7 @@ import Foundation
 import XcodeOpenCore
 import Commander
 
-let version = "1.1.0"
+let version = "1.3.0"
 
 fileprivate func main(_ f: @escaping (XcodeOpenCore.Options) throws -> ()) -> CommandType {
     if CommandLine.arguments.count == 1 {

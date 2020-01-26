@@ -2,42 +2,40 @@
 
 Open Xcode from terminal.
 
-# Install
+## Install
 
-## Homebrew
+### Homebrew
 
+```bash
+brew install YusukeHosonuma/xcode-open/xcode-open
 ```
-$ brew install YusukeHosonuma/xcode-open/xcode-open
-```
 
-**Nore: Require install Xcode 11.2+**
-
-## Download the executable binary from [Releases](https://github.com/YusukeHosonuma/XcodeOpen/releases)
+### Download the executable binary from [Releases](https://github.com/YusukeHosonuma/XcodeOpen/releases)
 
 Download from [Releases](https://github.com/YusukeHosonuma/XcodeOpen/releases), then copy to any place.
 
-# Usage
+## Usage
 
-## Open by default
+### Open by default
 
-```
-$ xcode-open
-```
-
-## Open by specify version
-
-```
-$ xcode-open 11.3
+```bash
+xcode-open
 ```
 
-## Open by specify version and save setting
+### Open by specify version
 
-```
-$ xcode-open 11.3 --save
-$ xcode-open # detect version from .xcode_version
+```bash
+xcode-open 11.3
 ```
 
-# Development
+### Open by specify version and save setting
+
+```bash
+xcode-open 11.3 --save
+xcode-open # detect version from .xcode_version
+```
+
+## Development
 
 Required
 
